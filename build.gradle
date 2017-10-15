@@ -17,3 +17,29 @@ jar {
     from configurations.compile.collect{ zipTree it }
     manifest.attributes "Main-Class": "main.java.io.gradleTutorial.Main"
 }
+
+task hello {
+    group 'greetingas'
+    description 'Greets you.'
+
+    // configuration phase
+    println 'Hello from the configuration phase!'
+    ext.greeting = 'Hey, how\'s it going?'
+
+    // execution phase
+    doLast { println 'Hello!' }
+    doLast { println 'What\'s crackin?' }
+    doFirst { println 'Hey, I know this guy...' }
+    doLast { println "Greetings: $greeting" }
+}
+
+task run(type: JavaExec, dependsOn: classes){
+    main 'main.java.io.gradleTutorial.Main'
+    classpath sourceSets.main.runtimeClasspath
+    args 'Hello world!'
+}
+
+task runJar(type: Exec, dependsOn: jar) {
+    executable 'java'
+    args '-jar', "$jar.archivePath", 'Hello world'
+}
